@@ -287,7 +287,7 @@ CHIP_ERROR AmebaUtils::MapDctError(int32_t error)
 
 CHIP_ERROR AmebaUtils::MapFlashError(int32_t error)
 {
-    if (error == 1)
+    if (error == OTA_SUCCESS)
         return CHIP_NO_ERROR;
 
     return CHIP_ERROR_INTERNAL;

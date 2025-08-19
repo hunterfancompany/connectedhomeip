@@ -85,3 +85,12 @@ examples/*/esp32/dependencies.lock
 
 # jupyter temporary files
 .ipynb_checkpoints
+
+ota-provider
+*.a
+*.dep
+*.ewt
+*.d
+*.o
+*.su
+*.s
