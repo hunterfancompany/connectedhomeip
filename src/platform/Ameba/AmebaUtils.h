@@ -28,6 +28,8 @@ enum class AmebaErrorType
 {
     kDctError,
     kFlashError,
+    kFactoryReadError,
+    kOtaError,
     kWiFiError,
 };
 
@@ -56,6 +58,8 @@ public:
 private:
     static CHIP_ERROR MapDctError(int32_t error);
     static CHIP_ERROR MapFlashError(int32_t error);
+    static CHIP_ERROR MapFactoryReadError(int32_t error);
+    static CHIP_ERROR MapOtaError(int32_t error);
     static CHIP_ERROR MapWiFiError(int32_t error);
 };
 

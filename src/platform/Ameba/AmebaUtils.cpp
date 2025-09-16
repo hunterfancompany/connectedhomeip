@@ -262,6 +262,14 @@ CHIP_ERROR AmebaUtils::MapError(int32_t error, AmebaErrorType type)
     {
         return MapFlashError(error);
     }
+    if (type == AmebaErrorType::kFactoryReadError)
+    {
+        return MapFactoryReadError(error);
+    }
+    if (type == AmebaErrorType::kOtaError)
+    {
+        return MapOtaError(error);
+    }
     if (type == AmebaErrorType::kWiFiError)
     {
         return MapWiFiError(error);
@@ -286,6 +294,22 @@ CHIP_ERROR AmebaUtils::MapDctError(int32_t error)
 }
 
 CHIP_ERROR AmebaUtils::MapFlashError(int32_t error)
+{
+    if (error == 0)
+        return CHIP_NO_ERROR;
+
+    return CHIP_ERROR_INTERNAL;
+}
+
+CHIP_ERROR AmebaUtils::MapFactoryReadError(int32_t error)
+{
+    if (error == 1)
+        return CHIP_NO_ERROR;
+
+    return CHIP_ERROR_INTERNAL;
+}
+
+CHIP_ERROR AmebaUtils::MapOtaError(int32_t error)
 {
     if (error == OTA_SUCCESS)
         return CHIP_NO_ERROR;

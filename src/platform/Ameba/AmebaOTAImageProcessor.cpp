@@ -139,7 +139,7 @@ void AmebaOTAImageProcessor::HandleFinalize(intptr_t context)
         return;
     }
 
-    if (AmebaUtils::MapError(matter_ota_flush_last(), AmebaErrorType::kFlashError) != CHIP_NO_ERROR)
+    if (AmebaUtils::MapError(matter_ota_flush_last(), AmebaErrorType::kOtaError) != CHIP_NO_ERROR)
     {
         ChipLogError(SoftwareUpdate, "Failed to finalize OTA");
         return;
@@ -192,7 +192,7 @@ void AmebaOTAImageProcessor::HandleProcessBlock(intptr_t context)
         if (block.size() >= remainHeader)
         {
             if (AmebaUtils::MapError(matter_ota_store_header((uint8_t *) block.data(), remainHeader),
-                                     AmebaErrorType::kFlashError) != CHIP_NO_ERROR)
+                                     AmebaErrorType::kOtaError) != CHIP_NO_ERROR)
             {
                 ChipLogError(SoftwareUpdate, "Failed to store OTA header");
                 return;
@@ -203,7 +203,7 @@ void AmebaOTAImageProcessor::HandleProcessBlock(intptr_t context)
         else
         {
             if (AmebaUtils::MapError(matter_ota_store_header((uint8_t *) block.data(), block.size()),
-                                     AmebaErrorType::kFlashError) != CHIP_NO_ERROR)
+                                     AmebaErrorType::kOtaError) != CHIP_NO_ERROR)
             {
                 ChipLogError(SoftwareUpdate, "Failed to store OTA header");
                 return;
@@ -213,7 +213,7 @@ void AmebaOTAImageProcessor::HandleProcessBlock(intptr_t context)
     }
 
     // 2. Write data to flash, flash erasure logic will be handled by lower layer
-    if (AmebaUtils::MapError(matter_ota_flash_burst_write(writePointer, writeLength), AmebaErrorType::kFlashError) != CHIP_NO_ERROR)
+    if (AmebaUtils::MapError(matter_ota_flash_burst_write(writePointer, writeLength), AmebaErrorType::kOtaError) != CHIP_NO_ERROR)
     {
         ChipLogError(SoftwareUpdate, "OTA write failed");
         return;
@@ -235,7 +235,7 @@ void AmebaOTAImageProcessor::HandleApply(intptr_t context)
     }
 
     // Update signature
-    if (AmebaUtils::MapError(matter_ota_update_signature(), AmebaErrorType::kFlashError) != CHIP_NO_ERROR)
+    if (AmebaUtils::MapError(matter_ota_update_signature(), AmebaErrorType::kOtaError) != CHIP_NO_ERROR)
     {
         ChipLogError(SoftwareUpdate, "OTA update signature failed");
         GetRequestorInstance()->CancelImageUpdate();

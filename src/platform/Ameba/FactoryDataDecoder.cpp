@@ -28,7 +28,7 @@ namespace DeviceLayer {
 CHIP_ERROR FactoryDataDecoder::ReadFactoryData(uint8_t * buffer, uint16_t * pfactorydata_len)
 {
     int32_t error  = ReadFactory(buffer, pfactorydata_len);
-    CHIP_ERROR err = AmebaUtils::MapError(error, AmebaErrorType::kFlashError);
+    CHIP_ERROR err = AmebaUtils::MapError(error, AmebaErrorType::kFactoryReadError);
 
     return err;
 }
@@ -36,7 +36,7 @@ CHIP_ERROR FactoryDataDecoder::ReadFactoryData(uint8_t * buffer, uint16_t * pfac
 CHIP_ERROR FactoryDataDecoder::DecodeFactoryData(uint8_t * buffer, FactoryData * fdata, uint16_t factorydata_len)
 {
     int32_t error  = DecodeFactory(buffer, fdata, factorydata_len);
-    CHIP_ERROR err = AmebaUtils::MapError(error, AmebaErrorType::kFlashError);
+    CHIP_ERROR err = AmebaUtils::MapError(error, AmebaErrorType::kFactoryReadError);
 
     return err;
 }
