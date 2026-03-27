@@ -360,6 +360,7 @@ def cleanDirectory(pathToClean):
 parser = argparse.ArgumentParser()
 parser.add_argument('--pics-template', required=True)
 parser.add_argument('--pics-output', required=True)
+parser.add_argument('--dm-xml')
 args, unknown = parser.parse_known_args()
 
 xmlTemplatePathStr = args.pics_template
@@ -414,7 +415,11 @@ class DeviceMappingTest(MatterBaseTest):
         console = Console()
 
         global xml_clusters
-        xml_clusters, problems = build_xml_clusters()
+        dm_xml = getattr(args, "dm-xml", None)
+        if dm_xml:
+            xml_clusters, problems = build_xml_clusters(pathlib.Path(f"{dm_xml}/clusters"))
+        else:
+            xml_clusters, problems = build_xml_clusters(pathlib.Path("../../../data_model/1.4/clusters"))
 
         # Run device mapping function
         await DeviceMapping(self.default_controller, self.dut_node_id, outputPathStr)
