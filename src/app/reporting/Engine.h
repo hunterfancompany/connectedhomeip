@@ -104,11 +104,11 @@ public:
     CHIP_ERROR ScheduleEventDelivery(ConcreteEventPath & aPath, uint32_t aBytesWritten);
 
     /*
-     * Resets the tracker that tracks the currently serviced read handler.
-     * apReadHandler can be non-null to indicate that the reset is due to a
-     * specific ReadHandler being deallocated.
+     * Adjusts the tracker that tracks the currently serviced read handler for
+     * apReadHandlerBeingDeleted, which sits at position aDeletedIndex among the
+     * aActiveCount active read handlers and is about to be deallocated.
      */
-    void ResetReadHandlerTracker(ReadHandler * apReadHandlerBeingDeleted)
+    void ResetReadHandlerTracker(ReadHandler * apReadHandlerBeingDeleted, uint32_t aDeletedIndex, uint32_t aActiveCount)
     {
         if (apReadHandlerBeingDeleted == mRunningReadHandler)
         {
@@ -118,10 +118,16 @@ public:
         }
         else
         {
-            // No idea what to do here to make the indexing sane.  Just start at
-            // the beginning.  We need to do better here; see
-            // https://github.com/project-chip/connectedhomeip/issues/13809
-            mCurReadHandlerIdx = 0;
+            // Keep pointing at the same next handler: active handlers after the
+            // deleted one shift down one position. Restarting at 0 (issue #13809)
+            // let a new read overtake pending subscription reports. Run() applies
+            // the modulo on read, so wrap the tracker before comparing.
+            uint32_t current = (aActiveCount != 0) ? (mCurReadHandlerIdx % aActiveCount) : 0;
+            if (aDeletedIndex < current)
+            {
+                --current;
+            }
+            mCurReadHandlerIdx = current;
         }
     }
 

@@ -414,11 +414,22 @@ void InteractionModelEngine::OnDone(CommandHandlerImpl & apCommandObj)
 void InteractionModelEngine::OnDone(ReadHandler & apReadObj)
 {
     //
-    // Deleting an item can shift down the contents of the underlying pool storage,
-    // rendering any tracker using positional indexes invalid. Let's reset it,
-    // based on which readHandler we are getting rid of.
+    // Deleting an item shifts down the position of every active handler after it,
+    // rendering any tracker using positional indexes invalid. Let's adjust it,
+    // based on where the readHandler we are getting rid of sits (the same
+    // positions ActiveHandlerAt uses).
     //
-    mReportingEngine.ResetReadHandlerTracker(&apReadObj);
+    uint32_t deletedIndex = 0;
+    uint32_t activeCount  = 0;
+    mReadHandlers.ForEachActiveObject([&apReadObj, &deletedIndex, &activeCount](ReadHandler * handler) {
+        if (handler == &apReadObj)
+        {
+            deletedIndex = activeCount;
+        }
+        activeCount++;
+        return Loop::Continue;
+    });
+    mReportingEngine.ResetReadHandlerTracker(&apReadObj, deletedIndex, activeCount);
 
     mReadHandlers.ReleaseObject(&apReadObj);
     TryToResumeSubscriptions();
